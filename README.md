@@ -1,4 +1,4 @@
-# ✨ Smart Sorter ✨
+# ✨ sort_OCD ✨
 
 A professional, feature-rich CLI tool for intelligently organizing files. Built for the 72-hour Virtual CLI Development Challenge.
 
