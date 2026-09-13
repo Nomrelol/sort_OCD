@@ -1,0 +1,3 @@
+- **test1.txt**: No text content found.
+- **test2.jpg**: No text content found.
+- **test3.py**: No text content found.

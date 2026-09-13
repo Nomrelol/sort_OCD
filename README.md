@@ -1,101 +1,216 @@
-# ✨ sort_OCD ✨
+# ⚡ sort_OCD
 
-A professional, feature-rich CLI tool for intelligently organizing files. Built for the 72-hour Virtual CLI Development Challenge.
+> **AI-Powered File Organizer CLI** — Clean your folders in seconds with local or cloud AI.
 
-Smart Sorter is designed to be both powerful for experts and easy for beginners. It can be run instantly with a single command or through a user-friendly interactive menu.
-
----
-
-## 🚀 Features
-
-* **Hybrid Interface**: Use it as a fast command-line tool or through a guided interactive menu.
-* **Multiple Sorting Strategies**: Organize your files by:
-    * File Type (e.g., Images, Documents, Code)
-    * Year (e.g., `2025/`)
-    * Month (e.g., `2025-09-September/`)
-    * Day (e.g., `2025-09-29-Monday/`)
-* **Rich Animations**: Polished animations for a modern CLI experience, including:
-    * A typewriter effect for the welcome message.
-    * A live progress bar during file scanning.
-    * A spinner animation during file organization.
-    * An animated exit banner.
-* **Built for Safety**:
-    * **Action Plan Confirmation**: Always shows a summary of changes and asks for user approval before moving any files.
-    * **Safe Renaming**: Automatically prevents overwriting files by renaming duplicates (e.g., `file.txt` becomes `file (1).txt`).
-* **Detailed Logging**: All actions are automatically recorded in a `sorter.log` file for a complete audit trail.
+![Version](https://img.shields.io/badge/version-2.0.0-brightcyan)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
-## ⚙️ Requirements
+## What it does
 
-* Python 3.x
-
-No external libraries are needed! All features are built using Python's standard library.
+sort_OCD organizes messy folders intelligently. It supports **8 sorting modes**, **3 AI backends**, a **background watcher daemon**, **duplicate detection**, and full **session-based undo** — all from one clean command.
 
 ---
 
-## Usage
+## Features
 
-There are two ways to use Smart Sorter: Interactive Mode and CLI Mode.
+| Feature | Details |
+|---|---|
+| **8 Sort Modes** | By type, date, size, alphabet, AI custom rule, AI auto-pilot |
+| **20+ File Categories** | Images, Videos, Audio, Code, Design, 3D Models, eBooks, Fonts, and more |
+| **Multi-Backend AI** | Ollama (local/free), OpenAI, Anthropic, or any custom endpoint |
+| **Duplicate Detection** | SHA-256 hashing — finds exact duplicates, lets you pick what to keep |
+| **Folder Watcher** | Background daemon auto-sorts your Downloads as files arrive |
+| **Session Undo** | Every move logged to SQLite — reliably reversible at any time |
+| **Stats Dashboard** | See all-time stats, recent sessions, most-used modes |
+| **Saved Profiles** | Save your "Downloads workflow" and run it with one command |
+| **Zero Setup** | Works out-of-the-box. AI is optional and auto-detected |
 
-### 1. Interactive Mode (For Beginners)
+---
 
-If you're new or unsure, simply run the script without any arguments. It will guide you through the process with a friendly menu.
+## Installation
 
-**Command:**
 ```bash
-python sorter.py
+# 1. Clone the repo
+git clone https://github.com/sort-ocd/sort_ocd.git
+cd sort_OCD
 
-DEMO:
---- Welcome to the Interactive File Sorter ---
-Enter the path to the folder you want to sort: ./test_folder
+# 2. Create and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate
 
-How would you like to sort the files?
-  1: By File Type (e.g., Images, Documents)
-  2: By Year (e.g., 2025)
-  3: By Month (e.g., 2025-09-September)
-  4: By Day (e.g., 2025-09-29-Monday)
+# 3a. Install (base — no AI)
+pip install -e .
 
-Enter your choice [default is 1]: 1
+# 3b. Install with local AI (Ollama)
+pip install -e ".[ai-local]"
 
-Scanning Files: |██████████████████████████████████████████████████| 100.0% Complete
+# 3c. Install with cloud AI (OpenAI + Anthropic)
+pip install -e ".[ai-cloud]"
 
---- ACTION PLAN ---
-The script will organize 6 file(s) into 5 folder(s).
-Total size of files to be moved: 0.00 B
+# 3d. Install everything
+pip install -e ".[all]"
+```
 
-Proceed with this plan? (y/n): y
+> **Note:** Always activate the venv first (`source venv/bin/activate`) before using `sort-ocd`.
 
-Starting organization...
-Organizing files /
-  - Moved 'archive.zip'
-  - Moved 'document.pdf'
-  - Moved 'image.jpg'
-  - Moved 'notes.txt'
-  - Moved 'song.mp3'
-  - Moved 'video.mp4'
+---
 
-Organization complete! Moved 6 file(s).
-Organization complete! Goodbye 👋
+## Quick Start
 
-Comands:
-python sorter.py ./my_downloads --by ext
-python sorter.py ./my_photos --by year
-python sorter.py C:\Users\YourUser\Desktop --by month
-python sorter.py /path/to/your/folder --by day
+```bash
+# Interactive mode — guided, no flags needed
+sort-ocd
 
+# Sort a folder by file type (instant, no AI)
+sort-ocd sort ~/Downloads --by ext
 
-📝 Logging
-Every time you run the script, it will create or append to a file named sorter.log in the same directory. This file contains a timestamped record of all actions performed, including the mode used, directories created, and files moved. This is useful for keeping track of your organization history.
+# Sort by date (year/month/day)
+sort-ocd sort ~/Downloads --by month
 
-==================================================
-Sorter session started at 2025-09-29 23:15:00
-==================================================
-[2025-09-29 23:15:00] CLI mode. Path: ./test_folder, Mode: ext
-[2025-09-29 23:15:00] Starting scan of 6 files.
-[2025-09-29 23:15:01] Scan complete. Plan created with 5 destination folders.
-[2025-09-29 23:15:05] User confirmed. Starting file move operation.
-[2025-09-29 23:15:05] Created directory: ./test_folder/Archives
-[2025-09-29 23:15:05] Moved './test_folder/archive.zip' to './test_folder/Archives/archive.zip'
-...
-[2025-09-29 23:15:06] Operation complete. Moved 6 files.
+# Sort by file size
+sort-ocd sort ~/Downloads --by size
+
+# Alphabetical sort
+sort-ocd sort ~/Downloads --by alpha
+```
+
+---
+
+## AI Modes
+
+```bash
+# AI Auto-Pilot: AI scans files and suggests 3 structures, you pick one
+sort-ocd sort ~/Downloads --by ai_auto
+
+# AI Custom Rule: describe what you want in plain English
+sort-ocd sort ~/Downloads --by ai --ai-rule "Put receipts in Finance, photos in Memories"
+```
+
+**AI Backend Setup** (one-time, optional):
+```bash
+sort-ocd config
+```
+This opens an interactive wizard where you choose Ollama, OpenAI, Anthropic, or a custom endpoint. Settings are saved to `~/.sort_ocd_config.json`.
+
+---
+
+## Folder Watcher
+
+```bash
+# Start watching ~/Downloads and auto-sort new files
+sort-ocd watch ~/Downloads
+
+# Watch with a specific mode
+sort-ocd watch ~/Downloads --mode ext
+
+# Stop the watcher
+sort-ocd watch --stop
+```
+
+---
+
+## Duplicate Finder
+
+```bash
+sort-ocd dupes ~/Downloads
+```
+
+Scans all files by SHA-256 hash, shows duplicate groups, and lets you interactively pick which copy to keep. Duplicates are moved to a `_DUPLICATES/` subfolder — **never deleted**.
+
+---
+
+## Undo
+
+```bash
+# Undo the last operation
+sort-ocd undo
+
+# Undo a specific session by ID
+sort-ocd undo --session 3
+```
+
+---
+
+## Stats Dashboard
+
+```bash
+sort-ocd stats
+```
+
+Shows total files organized, sessions history, and most-used modes.
+
+---
+
+## Saved Profiles
+
+```bash
+# Save your current setup as a profile
+sort-ocd profile save my-downloads --mode ext
+
+# List all profiles
+sort-ocd profile list
+
+# Run a profile on a folder
+sort-ocd profile run my-downloads ~/Downloads
+
+# Delete a profile
+sort-ocd profile delete my-downloads
+```
+
+---
+
+## All Commands
+
+```
+sort-ocd                              Interactive mode (default)
+sort-ocd sort <path> [--by mode]      Sort files directly
+sort-ocd watch <path>                 Start folder watcher daemon
+sort-ocd watch --stop                 Stop running watcher
+sort-ocd dupes <path>                 Find and handle duplicates
+sort-ocd stats                        History and stats dashboard
+sort-ocd config                       Configure AI backend
+sort-ocd undo [--session N]           Undo last (or session N)
+sort-ocd profile list                 List saved profiles
+sort-ocd profile save <name>          Save a profile
+sort-ocd profile run <name> <path>    Run a saved profile
+sort-ocd profile delete <name>        Delete a profile
+sort-ocd --version                    Show version
+sort-ocd --help                       Show help
+```
+
+---
+
+## Sorting Modes
+
+| Mode | Flag | Description |
+|---|---|---|
+| File Type | `--by ext` | 20+ categories: Images, Videos, Code, Design, etc. |
+| Year | `--by year` | Folders like `2024`, `2025` |
+| Month | `--by month` | Folders like `2025-09 September` |
+| Day | `--by day` | Folders like `2025-09-13 Saturday` |
+| AI Auto | `--by ai_auto` | AI proposes 3 strategies, you pick |
+| AI Custom | `--by ai` | Describe your rule in plain English |
+| Size | `--by size` | Tiny / Small / Medium / Large / Huge |
+| Alphabetical | `--by alpha` | A-Z folders by filename first letter |
+
+---
+
+## AI Backends
+
+| Backend | Privacy | Cost | Setup |
+|---|---|---|---|
+| **Ollama** (default) | 🔒 100% local | Free | Install [Ollama](https://ollama.ai), pull a model |
+| **OpenAI** | ☁️ Cloud | ~$0.001/file | `OPENAI_API_KEY` |
+| **Anthropic** | ☁️ Cloud | ~$0.001/file | `ANTHROPIC_API_KEY` |
+| **Custom endpoint** | Varies | Varies | Any OpenAI-compatible URL |
+
+Run `sort-ocd config` to switch backends at any time.
+
+---
+
+## License
+
+MIT © sort_OCD
